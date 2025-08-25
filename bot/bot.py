@@ -2015,5 +2015,22 @@ def main():
         if hasattr(bot, 'conn'):
             bot.conn.close()
 
+
 if __name__ == "__main__":
-    main()
+    # For Render compatibility - start a simple web server
+    port = int(os.environ.get("PORT", 5000))
+    print(f"Starting web server on port {port}")
+    
+    # Simple HTTP server
+    import http.server
+    import socketserver
+    handler = http.server.SimpleHTTPRequestHandler
+    with socketserver.TCPServer(("", port), handler) as httpd:
+        print("Web server started")
+        # Start in background
+        import threading
+        server_thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+        server_thread.start()
+        
+        # Start your bot
+        main()
